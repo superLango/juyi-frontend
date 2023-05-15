@@ -25,18 +25,32 @@
       </template>
       <template #footer>
         <van-button size="small" plain type="primary" @click="doJoinTeam(team.id)">加入队伍</van-button>
+        <van-button v-if="team.userId === currentUser?.id" size="small" plain type="success"
+                    @click="doUpdateTeam(team.id)">更新队伍
+        </van-button>
+        <van-button v-if="team.userId === currentUser?.id" size="small" plain type="success"
+                    @click="doUpdateTeam(team.id)">退出队伍
+        </van-button>
+        <van-button v-if="team.userId === currentUser?.id" size="small" plain type="success"
+                    @click="doUpdateTeam(team.id)">解散队伍
+        </van-button>
       </template>
     </van-card>
   </div>
 </template>
 
 <script setup lang="ts">
-import {defineProps, withDefaults} from "vue";
+import {defineProps, onMounted, ref, withDefaults} from "vue";
 import {TeamType} from "../models/team";
 import {teamStatusEnum} from "../constants/team";
 import test from '../assets/test.png'
 import myAxios from "../plugins/myAxios";
 import {showFailToast, showSuccessToast} from "vant";
+import {getCurrentUserState} from "../states/user";
+import {getCurrentUser} from "../services/user";
+import {useRouter} from "vue-router";
+
+const router = useRouter();
 
 interface TeamCardListProps {
   teamList: TeamType[];
@@ -48,6 +62,14 @@ const props = withDefaults(defineProps<TeamCardListProps>(), {
   // @ts-ignore
   teamList: [] as TeamType[],
 });
+
+const currentUser = ref();
+
+onMounted(async () => {
+  currentUser.value = await getCurrentUser();
+})
+
+
 /**
  * 加入队伍
  * @param id
@@ -56,11 +78,23 @@ const doJoinTeam = async (id: number) => {
   const res = await myAxios.post('/team/join', {
     teamId: id
   });
-  if (res?.code === 0){
+  if (res?.code === 0) {
     showSuccessToast('加入成功');
-  }else {
+  } else {
     showFailToast('加入失败' + (res.description ? `，${res.description}` : ''));
   }
+}
+/**
+ * 跳转至更新队伍页
+ * @param id
+ */
+const doUpdateTeam = (id: number) => {
+  router.push({
+    path: '/team/update',
+    query: {
+      id,
+    }
+  })
 }
 
 </script>
