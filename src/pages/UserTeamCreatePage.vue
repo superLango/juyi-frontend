@@ -1,8 +1,8 @@
 <template>
   <div id="teamPage">
     <van-search v-model="searchText" placeholder="搜索队伍" @search="onSearch"/>
-    <van-button class="add-button" type="primary"  icon="plus" @click="doCreateTeam"/>
-    <team-card-list :team-list="teamList" />
+    <van-button type="primary" @click="doJoinTeam">创建队伍</van-button>
+    <team-card-list :team-list="teamList"/>
     <van-empty v-if="teamList?.length < 1" description="数据为空"/>
   </div>
 </template>
@@ -20,7 +20,7 @@ const router = useRouter();
 const searchText = ref('');
 
 // 跳转到加入队伍页
-const doCreateTeam = () => {
+const doJoinTeam = () => {
   router.push({
     path: "/team/add"
   })
@@ -34,7 +34,7 @@ const teamList = ref([]);
  * @returns {Promise<void>}
  */
 const listTeam = async (val = '') => {
-  const res = await myAxios.get("/team/list", {
+  const res = await myAxios.get("/team/list/my/create", {
     params: {
       searchText: val,
       pageNum: 1,
