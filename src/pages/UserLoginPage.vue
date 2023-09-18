@@ -38,6 +38,7 @@
         <img src="../assets/beian.png" style="float:left;"/>
         <p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">甘公网安备
           62092202000136号</p></a>
+      
     </div>
     <div
         style="width:300px;margin:0 auto; padding:20px 0;text-align: center;position: absolute;bottom: 30px;left: 30px;">
