@@ -30,7 +30,22 @@
       </van-button>
     </div>
   </van-form>
-
+  <div>
+    <div
+        style="width:300px;margin:0 auto; padding:20px 0;text-align: center;position: absolute;bottom: 50px;left: 30px;">
+      <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=62092202000136"
+         style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+        <img src="../assets/beian.png" style="float:left;"/>
+        <p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">甘公网安备
+          62092202000136号</p></a>
+    </div>
+    <div
+        style="width:300px;margin:0 auto; padding:20px 0;text-align: center;position: absolute;bottom: 30px;left: 30px;">
+      <a target="_blank" href="https://beian.miit.gov.cn"
+         style="display:inline-block;text-decoration:none;height:20px;line-height:20px;">
+        <p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">备案号&nbsp;陇ICP备2023001048号-1</p></a>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
