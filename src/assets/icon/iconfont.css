@@ -1,0 +1,99 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 4268812 */
+  src: url('iconfont.woff2?t=1695716732698') format('woff2'),
+       url('iconfont.woff?t=1695716732698') format('woff'),
+       url('iconfont.ttf?t=1695716732698') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-shezhi:before {
+  content: "\e892";
+}
+
+.icon-GitHub:before {
+  content: "\ea0a";
+}
+
+.icon-weixin:before {
+  content: "\e637";
+}
+
+.icon-tuichu:before {
+  content: "\e622";
+}
+
+.icon-duiwu:before {
+  content: "\e712";
+}
+
+.icon-duiwu1:before {
+  content: "\e623";
+}
+
+.icon-shijian:before {
+  content: "\eb2a";
+}
+
+.icon-xingbie:before {
+  content: "\e601";
+}
+
+.icon-discount-fill:before {
+  content: "\e853";
+}
+
+.icon-discount:before {
+  content: "\e854";
+}
+
+.icon-phone-fill:before {
+  content: "\e85f";
+}
+
+.icon-phone:before {
+  content: "\e860";
+}
+
+.icon-picture-fill:before {
+  content: "\e861";
+}
+
+.icon-picture:before {
+  content: "\e862";
+}
+
+.icon-shut-down:before {
+  content: "\e869";
+}
+
+.icon-shilikapian:before {
+  content: "\e87d";
+}
+
+.icon-customer-center:before {
+  content: "\e827";
+}
+
+.icon-settings-fill:before {
+  content: "\e840";
+}
+
+.icon-settings:before {
+  content: "\e841";
+}
+
+.icon-email-fill:before {
+  content: "\e856";
+}
+
+.icon-email:before {
+  content: "\e857";
+}
+

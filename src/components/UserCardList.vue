@@ -3,7 +3,7 @@
     <van-card
         :desc="user.profile"
         :title="`${user.username}（${user.planetCode}）`"
-        :thumb="user.avatarUrl"
+        :thumb="user.avatarUrl?user.avatarUrl:test"
     >
       <template #tags>
         <van-tag plain type="primary" v-for="tag in user.tags" style="margin-right: 8px;margin-top: 2px">{{ tag }}
@@ -19,6 +19,7 @@
 <script setup lang="ts">
 import {defineProps, withDefaults} from "vue";
 import {UserType} from "../models/user";
+import test from '../assets/test.jpg'
 
 interface UserCardListProps {
   loading: boolean;

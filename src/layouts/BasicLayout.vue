@@ -6,7 +6,7 @@
       @click-right="onClickRight"
   >
     <template #right>
-      <van-icon name="search" size="18" />
+      <van-icon name="search" v-if="title === '伙伴匹配'" size="18" />
     </template>
   </van-nav-bar>
 

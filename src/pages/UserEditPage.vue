@@ -3,9 +3,11 @@
   <van-form @submit="onSubmit">
     <van-field
         v-model="editUser.currentValue"
-        :name="editUser.editKey"
-        :label="editUser.editName"
+        :name="`${editUser.editKey}`"
+        required
+        :label="`新${editUser.editName}`"
         :placeholder="`请输入${editUser.editName}`"
+        :rules="[{ required: true, message: `请填写${editUser.editName}` }]"
     />
     <div style="margin: 16px;">
       <van-button round block type="primary" native-type="submit">
@@ -31,7 +33,7 @@ const router = useRouter();
 const editUser = ref({
   editKey: route.query.editKey,
   editName: route.query.editName,
-  currentValue: route.query.currentValue
+  currentValue: route.query.editValue
 })
 
 const onSubmit = async () => {
@@ -52,7 +54,7 @@ const onSubmit = async () => {
     router.back();
   }
     else {
-      showFailToast('修改失败');
+      showFailToast(`修改失败，${res.description}`);
     }
 };
 

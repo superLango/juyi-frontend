@@ -1,5 +1,10 @@
 <template>
   <div id="teamAddPage">
+    <van-cell icon="photo-o" title="队伍头像" is-link center>
+      <van-uploader v-model="fileList" :max-count="1" :after-read="afterRead" preview-size="60px">
+        <img :src="imgSrc" style="width: 48px;height: 48px;border-radius: 50%" alt=""/>
+      </van-uploader>
+    </van-cell>
     <van-form @submit="onSubmit">
       <van-cell-group inset>
         <!--        队伍名-->
@@ -34,7 +39,7 @@
               title="请选择过期时间"
               @confirm="onConfirm"
               @cancel="showPicker = false"
-              :min-date="minDate" />
+              :min-date="minDate"/>
         </van-popup>
 
         <!--        队伍状态-->
@@ -84,7 +89,7 @@ const showPicker = ref(false);
 
 const minDate = new Date();
 
-const onConfirm = ({ selectedValues }) => {
+const onConfirm = ({selectedValues}) => {
   addTeamData.value.expireTime = selectedValues.join('-');
   showPicker.value = false;
 };
@@ -95,40 +100,60 @@ const addTeamData = ref({})
 const id = route.query.id;
 
 
+const imgSrc = ref('');
 // 获取队伍信息
 onMounted(async () => {
-  if (id <= 0){
+  if (id <= 0) {
     showFailToast('加载失败');
     return;
   }
-  const res = await myAxios.get("/team/get",{
+  const res = await myAxios.get("/team/get", {
     params: {
       id,
     }
   });
-  if (res?.code === 0){
+  if (res?.code === 0) {
     addTeamData.value = res.data;
-  }else {
-
+    imgSrc.value = res.data.teamAvatarUrl;
+  } else {
   }
 })
 
+const fileList = ref([]);
+const afterRead = async () => {
+  let formData: any = new FormData();
+  formData.append("id", id)
+  formData.append("file", fileList.value[0].file)
+  const res = await myAxios.post("/team/upload", formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
+  if (res?.code === 0) {
+    showSuccessToast("更新成功")
+    imgSrc.value = res?.data
+  } else {
+    showFailToast("更新失败：" + res.data.message)
+  }
+  fileList.value = []
+}
+
 // 提交
-const onSubmit =async () => {
+const onSubmit = async () => {
   const postData = {
     ...addTeamData.value,
     status: Number(addTeamData.value.status),
     expireTime: moment(addTeamData.value.expireTime).format("YYYY-MM-DD HH:mm:ss")
   }
   // todo 前端参数校验
-  const res = await myAxios.post("/team/update",postData);
-  if (res?.code === 0 && res.data){
+  const res = await myAxios.post("/team/update", postData);
+  if (res?.code === 0 && res.data) {
     showSuccessToast('更新成功');
     router.push({
       path: '/team',
       replace: true
     });
-  }else {
+  } else {
     showFailToast('更新失败')
   }
 }

@@ -4,7 +4,7 @@
         v-for="team in props.teamList"
         :desc="team.description"
         :title="`${team.name}`"
-        :thumb="test"
+        :thumb="team.teamAvatarUrl?team.teamAvatarUrl:test"
     >
       <template #tags>
         <van-tag plain type="danger" style="margin-right: 8px;margin-top: 2px">{{
@@ -49,7 +49,7 @@
 import {defineProps, onMounted, ref, withDefaults} from "vue";
 import {TeamType} from "../models/team";
 import {teamStatusEnum} from "../constants/team";
-import test from '../assets/test.png'
+import test from '../assets/test.jpg'
 import myAxios from "../plugins/myAxios";
 import {showFailToast, showSuccessToast} from "vant";
 import {getCurrentUser} from "../services/user";

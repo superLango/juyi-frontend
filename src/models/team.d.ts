@@ -7,6 +7,7 @@ export type TeamType = {
     id: number;
     name: string;
     description: string;
+    teamAvatarUrl: string;
     expireTime?: Date;
     maxNum: number;
     password?: string;

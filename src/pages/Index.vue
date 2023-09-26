@@ -1,10 +1,15 @@
 <template>
+  <van-swipe :autoplay="3000" lazy-render>
+    <van-swipe-item v-for="image in images" :key="image">
+      <img class="carousel-img" :src="image"/>
+    </van-swipe-item>
+  </van-swipe>
   <van-cell center title="心动模式">
     <template #right-icon>
-      <van-switch v-model="isMatchMode" />
+      <van-switch v-model="isMatchMode"/>
     </template>
   </van-cell>
-  <user-card-list :user-list="userList" :loading = "loading"/>
+  <user-card-list :user-list="userList" :loading="loading"/>
   <van-empty v-if="!userList || userList.length < 1" description="数据为空"/>
 </template>
 
@@ -25,11 +30,11 @@ const loading = ref(true);
 /**
  * 加载数据
  */
-const loadData =async () => {
+const loadData = async () => {
   let userListData;
   loading.value = true;
   // 心动模式 ，根据标签匹配用户
-  if (isMatchMode.value){
+  if (isMatchMode.value) {
     const num = 10;
     userListData = await myAxios.get('/user/match', {
       params: {
@@ -44,8 +49,7 @@ const loadData =async () => {
           console.error('/user/match error', error);
           showFailToast('请求失败');
         })
-  }
-  else {
+  } else {
     // 普通模式，直接分页查询
     userListData = await myAxios.get('/user/recommend', {
       params: {
@@ -77,9 +81,21 @@ watchEffect(() => {
   loadData()
 })
 
+import img1 from "../assets/carousel/1.jpeg"
+import img2 from "../assets/carousel/2.jpeg"
+import img3 from "../assets/carousel/3.jpeg"
+import img4 from "../assets/carousel/4.jpeg"
+
+const images = [
+  img1, img2, img3, img4
+
+];
 
 </script>
 
 <style scoped>
-
+.carousel-img {
+  width: 100%;
+  height: 100px;
+}
 </style>
