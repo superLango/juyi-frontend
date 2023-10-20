@@ -1,49 +1,58 @@
 <template>
-  <!--  搜索-->
   <form action="/">
     <van-search
         v-model="searchText"
-        show-action
         placeholder="请输入要搜索的标签"
         @search="onSearch"
-        @cancel="onCancel"
+    />
+    <van-divider content-position="center">已选标签</van-divider>
+    <div v-if="activeIds.length > 0">
+      <van-row style="padding: 16px">
+        <van-col v-for="tag in activeIds">
+          <van-tag closeable size="large" type="primary" @close="close(tag)" style="margin: 5px;">
+            {{ tag }}
+          </van-tag>
+        </van-col>
+      </van-row>
+    </div>
+    <van-divider content-position="center">自定义标签</van-divider>
+    <van-cell-group inset>
+      <van-field v-model="userDefinedTag" placeholder="请添加标签">
+        <template #button>
+          <van-button round size="small" type="success" @click="addUserDefinedTag" icon="passed">添加</van-button>
+        </template>
+      </van-field>
+    </van-cell-group>
+    <van-divider content-position="center">标签列表</van-divider>
+    <van-tree-select
+        v-model:active-id="activeIds"
+        v-model:main-active-index="activeIndex"
+        :items="tagList"
+        height="65vw"
     />
   </form>
-
-  <!--  标签-->
-  <van-divider content-position="left">已选标签</van-divider>
-  <div v-if="activeIds.length === 0" style="text-align: center">请选择标签</div>
-
-  <van-row gutter="16" style="padding: 0 16px">
-    <van-col v-for="tag in activeIds">
-      <van-tag closeable size="small" type="primary" @close="doClose(tag)">
-        {{ tag }}
-      </van-tag>
-    </van-col>
-  </van-row>
-
-  <van-divider content-position="left">选择标签</van-divider>
-
-  <van-tree-select
-      v-model:active-id="activeIds"
-      v-model:main-active-index="activeIndex"
-      :items="tagList"
-  />
-  <div style="padding: 12px">
-    <van-button block type="primary" @click="doSearchResult">搜索</van-button>
+  <div style="margin: 0 100px">
+    <van-button icon="passed" round block type="primary" @click="updateTag">完成</van-button>
   </div>
-
 </template>
 
 <script setup lang="ts">
 
-import {ref} from 'vue';
+import {onMounted, ref} from "vue";
 import {useRouter} from "vue-router";
+import {showFailToast} from "vant";
+import myAxios from "../plugins/myAxios.ts";
 
-const router = useRouter()
-
-const searchText = ref('');
-
+const userDefinedTag = ref("")
+const addUserDefinedTag = () => {
+  if (userDefinedTag.value !== "") {
+    activeIds.value.push(userDefinedTag.value)
+    userDefinedTag.value = ""
+  } else {
+    showFailToast("请先输入标签名")
+  }
+}
+let router = useRouter();
 const originTagList = [
   {
     text: '性别',
@@ -154,15 +163,17 @@ const originTagList = [
     ]
   }
 ];
-
-// 标签列表
 let tagList = ref(originTagList);
-
-/**
- * 搜索过滤
- * @param val
- */
-const onSearch = (val) => {
+const searchText = ref('');
+onMounted(async () => {
+  let res = await myAxios.get("/user/tags");
+  if (res?.code === 0) {
+    if (res.data){
+      activeIds.value = res.data
+    }
+  }
+})
+const onSearch = () => {
   tagList.value = originTagList.map(parentTag => {
     const tempChildren = [...parentTag.children];
     const tempParentTag = {...parentTag};
@@ -170,35 +181,21 @@ const onSearch = (val) => {
     return tempParentTag;
   })
 };
-const onCancel = () => {
-  searchText.value = '';
-  tagList.value = originTagList;
-};
-
-// 已选中的标签
 const activeIds = ref([]);
 const activeIndex = ref(0);
 
-// 移除标签
-const doClose = (tag) => {
-  activeIds.value = activeIds.value.filter(item => {
-    return item !== tag;
-  })
+const close = (tag) => {
+    activeIds.value = activeIds.value.filter((item) => {
+      return item !== tag;
+    })
+};
+const updateTag = async () => {
+  let res = await myAxios.post("/user/update/tags", activeIds.value);
+  if (res?.code === 0) {
+    await router.replace("/user")
+  }
 }
-/**
- * 执行搜索
- */
-const doSearchResult = () => {
-  router.push({
-    path: '/user/list',
-    query: {
-      tags: activeIds.value
-    }
-  })
-}
-
 </script>
 
 <style scoped>
-
 </style>

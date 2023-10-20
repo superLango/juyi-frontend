@@ -3,7 +3,8 @@ import axios, {AxiosInstance} from "axios";
 const isDev = process.env.NODE_ENV === 'development'
 
 const myAxios: AxiosInstance = axios.create({
-    baseURL: isDev ? 'http://localhost:9258/api' : 'http://jy-backend.lg-sp.cn/api',
+    baseURL: isDev ? 'http://localhost:9258/api' : 'http://www.**.com/api',
+    // baseURL: isDev ? 'http://localhost:9258/api' : 'http://localhost:9258/api',
 });
 
 myAxios.defaults.withCredentials = true;
