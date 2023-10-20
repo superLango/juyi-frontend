@@ -1,22 +1,26 @@
 <template>
+
   <div id="teamPage">
     <van-search v-model="searchText" placeholder="搜索队伍" @search="onSearch"/>
-    <van-tabs v-model:active="active" @change="onTabChange">
+    <van-tabs  v-model:active="active" @change="onTabChange">
       <van-tab title="公开" name="public"/>
       <van-tab title="加密" name="private"/>
     </van-tabs>
     <div style="margin-bottom: 10px"/>
     <van-button class="add-button" type="primary" icon="plus" @click="doCreateTeam"/>
-    <team-card-list :team-list="teamList"/>
-    <van-empty v-if="teamList?.length < 1" description="数据为空"/>
+    <van-pull-refresh v-model="loading" @refresh="onRefresh">
+      <team-card-list :team-list="teamList" @refresh="onRefresh"/>
+      <van-empty v-if="!teamList || teamList?.length < 1" description="数据为空"/>
+    </van-pull-refresh>
   </div>
+
 </template>
 
 <script setup lang="ts">
 
 import {useRouter} from "vue-router";
 import myAxios from "../plugins/myAxios.ts";
-import {showFailToast} from "vant";
+import {showFailToast, showSuccessToast} from "vant";
 import TeamCardList from "../components/TeamCardList.vue"
 import {onMounted, ref} from "vue";
 
@@ -24,12 +28,25 @@ const active = ref('public')
 
 const router = useRouter();
 
+let tabName = ref('public')
+
 const searchText = ref('');
+
+const loading = ref(false);
+const onRefresh = () => {
+  onTabChange(tabName)
+  setTimeout(() => {
+    // showSuccessToast('刷新成功');
+    loading.value = false;
+  }, 1000);
+};
+
 /**
- * 求换查询状态
+ * 切换查询状态
  * @param name
  */
 const onTabChange = (name) => {
+  tabName = name;
   // 查公开
   if (name === 'public') {
     listTeam(searchText.value, 0);

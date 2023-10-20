@@ -13,6 +13,8 @@ export type TeamType = {
     password?: string;
     // todo 定义枚举值类型，更规范
     status: number;
+    userId: number;
+    hasJoin: boolean;
     createTime: Date;
     updateTime: Date;
     createUser?: UserType;

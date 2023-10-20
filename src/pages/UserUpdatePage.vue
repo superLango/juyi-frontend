@@ -44,6 +44,11 @@
         <van-icon style="padding-right: 5px" class="iconfont" class-prefix="icon" name="discount" />
       </template>
     </van-cell>
+    <van-cell title="标签" is-link to="/user/tag">
+      <template #icon>
+        <van-icon style="padding-right: 5px" class="iconfont" class-prefix="icon" name="discount-fill" />
+      </template>
+    </van-cell>
     <van-cell title="电话" is-link :value="user.phone" @click="toEdit('phone','电话' ,user.phone)">
       <template #icon>
         <van-icon style="padding-right: 5px" class="iconfont" class-prefix="icon" name="phone" />
@@ -94,7 +99,7 @@ const genders = [
 async function getUser() {
   let currentUser = await getCurrentUser();
   if (currentUser) {
-    user.value = await getCurrentUser();
+    user.value = currentUser;
     imgSrc.value = user.value.avatarUrl
   } else {
     showFailToast("未登录")

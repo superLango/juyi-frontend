@@ -9,8 +9,11 @@
       <van-switch v-model="isMatchMode"/>
     </template>
   </van-cell>
-  <user-card-list :user-list="userList" :loading="loading"/>
-  <van-empty v-if="!userList || userList.length < 1" description="数据为空"/>
+  <van-search placeholder="请输入搜索关键词" v-model="username" shape="round" @search="searchUser"/>
+  <van-pull-refresh v-model="loading" @refresh="onRefresh">
+    <user-card-list :user-list="userList" :loading="loading"/>
+    <van-empty v-if="!userList || userList.length < 1" description="数据为空"/>
+  </van-pull-refresh>
 </template>
 
 <script setup lang="ts">
@@ -22,10 +25,21 @@ import UserCardList from "../components/UserCardList.vue";
 
 const isMatchMode = ref<boolean>(false);
 
+const username = ref('');
 
 const userList = ref([]);
 
-const loading = ref(true);
+// const loading = ref(true);
+
+
+const loading = ref(false);
+const onRefresh = () => {
+  loadData()
+  setTimeout(() => {
+    showSuccessToast('刷新成功');
+    loading.value = false;
+  }, 1000);
+};
 
 /**
  * 加载数据
@@ -73,8 +87,25 @@ const loadData = async () => {
       }
     })
     userList.value = userListData;
+    console.log(userList)
   }
   loading.value = false;
+}
+
+const searchUser = async (username) => {
+  const res = await myAxios.get("/user/search?username=" + username)
+  if (res?.code === 0) {
+    if (res.data) {
+      res.data.forEach(user => {
+        if (user.tags) {
+          user.tags = JSON.parse(user.tags);
+        }
+      })
+    }
+    userList.value = res.data;
+  } else {
+    showFailToast('加载队伍失败，请刷新重试');
+  }
 }
 
 watchEffect(() => {

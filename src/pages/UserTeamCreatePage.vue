@@ -1,9 +1,10 @@
 <template>
   <div id="teamPage">
     <van-search v-model="searchText" placeholder="搜索队伍" @search="onSearch"/>
-    <van-button type="primary" @click="doJoinTeam">创建队伍</van-button>
-    <team-card-list :team-list="teamList"/>
+    <van-pull-refresh v-model="loading" @refresh="onRefresh">
+    <team-card-list :team-list="teamList" @refresh="onRefresh"/>
     <van-empty v-if="teamList?.length < 1" description="数据为空"/>
+    </van-pull-refresh>
   </div>
 </template>
 
@@ -19,14 +20,17 @@ const router = useRouter();
 
 const searchText = ref('');
 
-// 跳转到加入队伍页
-const doJoinTeam = () => {
-  router.push({
-    path: "/team/add"
-  })
-}
-
 const teamList = ref([]);
+
+const loading = ref(false);
+
+const onRefresh = () => {
+  listTeam()
+  setTimeout(() => {
+    // showSuccessToast('刷新成功');
+    loading.value = false;
+  }, 1000);
+};
 
 /**
  * 搜索队伍

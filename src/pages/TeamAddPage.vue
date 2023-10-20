@@ -1,5 +1,8 @@
 <template>
   <div id="teamAddPage">
+    <van-notice-bar color="#1989fa" background="#ecf9ff" left-icon="info-o">
+      若不设置过期时间则永久有效！
+    </van-notice-bar>
     <van-form @submit="onSubmit">
       <van-cell-group inset>
         <!--        队伍名-->
@@ -20,7 +23,7 @@
             placeholder="请输入队伍描述"
         />
         <!--        过期时间-->
-        <van-field
+<!--        <van-field
             is-link
             readonly
             name="datePicker"
@@ -35,8 +38,19 @@
               @confirm="onConfirm"
               @cancel="showPicker = false"
               :min-date="minDate"/>
-        </van-popup>
+        </van-popup>-->
 
+        <van-field
+            style="margin: 10px 0"
+            v-model="addTeamData.expireTime"
+            is-link
+            readonly
+            name="calendar"
+            label="过期时间："
+            placeholder="点击选择过期时间"
+            @click="showCalendar = true"
+        />
+        <van-calendar v-model:show="showCalendar" @confirm="onConfirm"/>
 
         <!--        最大人数-->
         <van-field name="stepper" label="请选择最大人数">
@@ -86,13 +100,16 @@ import myAxios from "../plugins/myAxios.ts";
 const router = useRouter();
 
 // 展示日期选择器
-const showPicker = ref(false);
+const showCalendar = ref(false);
 
-const minDate = new Date();
-
-const onConfirm = ({selectedValues}) => {
-  addTeamData.value.expireTime = selectedValues.join('-');
-  showPicker.value = false;
+const onConfirm = (date) => {
+  let month: string | number = date.getMonth() + 1;
+  month = month < 10 ? '0' + month : month
+  let day = date.getDate();
+  day = day < 10 ? '0' + day : day
+  let year = date.getFullYear()
+  addTeamData.value.expireTime = `${year}-${month}-${day}`;
+  showCalendar.value = false;
 };
 
 const initFormData = {
@@ -112,7 +129,6 @@ const onSubmit = async () => {
   const postData = {
     ...addTeamData.value,
     status: Number(addTeamData.value.status),
-    expireTime: moment(addTeamData.value.expireTime).format("YYYY-MM-DD HH:mm:ss")
   }
   // todo 前端参数校验
   const res = await myAxios.post("/team/add", postData);

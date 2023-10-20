@@ -12,6 +12,7 @@ import UserLoginPage from "../pages/UserLoginPage.vue";
 import UserRegisterPage from "../pages/UserRegisterPage.vue";
 import TeamAddPage from "../pages/TeamAddPage.vue";
 import TeamUpdatePage from "../pages/TeamUpdatePage.vue";
+import UserTagPage from "../pages/UserTagPage.vue";
 
 
 const routes = [
@@ -28,6 +29,7 @@ const routes = [
     {path: '/user/update',title: '更新信息', component: UserUpdatePage},
     {path: '/user/team/create',title: '我创建的队伍', component: UserTeamCreatePage},
     {path: '/user/team/join',title: '我加入的队伍', component: UserTeamJoinPage},
+    {path: '/user/tag', title: "标签选择", component: UserTagPage},
 ]
 
 export default routes;

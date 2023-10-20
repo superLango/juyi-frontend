@@ -20,47 +20,64 @@
       <template #title>
         <span style="margin-left: 20px">我的标签：</span>
       </template>
-<!--      <template #value>-->
-<!--        <van-tag v-for="tag in user.tags" plain type="danger" style="margin-right: 8px;margin-top: 8px">-->
-<!--          {{ tag }}-->
-<!--        </van-tag>-->
-<!--      </template>-->
-      <template #tags>
-        <van-tag plain type="primary" v-for="tag in user.tags" style="margin-right: 8px;margin-top: 2px">{{ tag }}
+      <template #value>
+        <van-tag v-for="tag in user.tags" plain type="danger" style="margin-right: 8px;margin-top: 8px">
+          {{ tag }}
         </van-tag>
       </template>
     </van-cell>
   </template>
-  <van-divider />
+  <van-divider/>
   <van-grid :column-num="3">
     <van-grid-item text="创建的队伍" to="/user/team/create">
       <template #icon>
-      <van-icon style="font-size: 25px;padding-bottom: 8px;color: #1989FA" class="iconfont" class-prefix="icon" name="duiwu" />
+        <van-icon style="font-size: 25px;padding-bottom: 8px;color: #1989FA" class="iconfont" class-prefix="icon"
+                  name="duiwu"/>
       </template>
     </van-grid-item>
     <van-grid-item text="加入的队伍" to="/user/team/join">
       <template #icon>
-        <van-icon style="font-size: 25px;padding-bottom: 8px;color: #00EEB3" class="iconfont" class-prefix="icon" name="duiwu1" />
+        <van-icon style="font-size: 25px;padding-bottom: 8px;color: #00EEB3" class="iconfont" class-prefix="icon"
+                  name="duiwu1"/>
       </template>
     </van-grid-item>
-    <van-grid-item text="联系作者" >
+
+    <van-grid-item text="联系作者" @click="customerService">
       <template #icon>
-        <van-icon style="font-size: 25px;padding-bottom: 8px;color: #00C800" class="iconfont" class-prefix="icon" name="weixin" />
+        <van-icon style="font-size: 25px;padding-bottom: 8px;color: #00C800" class="iconfont" class-prefix="icon"
+                  name="weixin"/>
       </template>
     </van-grid-item>
-    <van-grid-item text="直达仓库" >
+    <van-dialog v-model:show="showCustomerService" title="请加客服微信">
+      <van-image
+          :src=img1
+      />
+    </van-dialog>
+
+    <van-grid-item text="直达仓库" @click="toWarehouse">
       <template #icon>
-        <van-icon style="font-size: 25px;padding-bottom: 8px;color: #191717" class="iconfont" class-prefix="icon" name="GitHub" />
+        <van-icon style="font-size: 25px;padding-bottom: 8px;color: #191717" class="iconfont" class-prefix="icon"
+                  name="GitHub"/>
       </template>
     </van-grid-item>
-    <van-grid-item text="设置" >
+    <van-dialog v-model:show="directToWarehouse" title="请选择仓库">
+      <div style="margin: 10px 0; text-align: center">
+      前端仓库：<a href="https://github.com/superLango/juyi-frontend" target="_blank" style="color: #1989FA">点击跳转前端仓库</a>
+      </div>
+      <div style="margin: 10px 0; text-align: center">
+      后端仓库：<a href="https://github.com/superLango/juyi-backend" target="_blank" style="color: #1989FA">点击跳转后端仓库</a>
+      </div>
+    </van-dialog>
+
+    <van-grid-item text="设置">
       <template #icon>
-        <van-icon style="font-size: 25px;padding-bottom: 8px;" class="iconfont" class-prefix="icon" name="shezhi" />
+        <van-icon style="font-size: 25px;padding-bottom: 8px;" class="iconfont" class-prefix="icon" name="shezhi"/>
       </template>
     </van-grid-item>
     <van-grid-item text="点击退出" @click="logout">
       <template #icon>
-        <van-icon style="font-size: 25px;padding-bottom: 8px;color: #D81E06" class="iconfont" class-prefix="icon" name="tuichu" />
+        <van-icon style="font-size: 25px;padding-bottom: 8px;color: #D81E06" class="iconfont" class-prefix="icon"
+                  name="tuichu"/>
       </template>
     </van-grid-item>
   </van-grid>
@@ -73,7 +90,8 @@ import myAxios from "../plugins/myAxios";
 import {showFailToast, showSuccessToast} from "vant";
 import {getCurrentUser} from "../services/user";
 import '../assets/icon/iconfont.css';
-import {UserType} from "../models/user";
+
+import img1 from "../assets/carousel/1.jpeg"
 
 // const user = {
 //   id: 1,
@@ -88,9 +106,20 @@ import {UserType} from "../models/user";
 // }
 
 const user = ref();
+const showCustomerService = ref(false)
+const directToWarehouse = ref(false)
 
 onMounted(async () => {
-  user.value = await getCurrentUser();
+  let currentUser = await getCurrentUser();
+  if (currentUser) {
+    user.value = currentUser
+    if (currentUser.tags) {
+      currentUser.tags = JSON.parse(currentUser.tags)
+    }
+  } else {
+    showFailToast("未登录")
+    await router.replace("/user/login")
+  }
 })
 
 const router = useRouter();
@@ -103,6 +132,14 @@ const logout = async () => {
   } else {
     showFailToast("内部错误," + res?.message)
   }
+}
+
+const toWarehouse = () => {
+  directToWarehouse.value = true
+}
+
+const customerService = () => {
+  showCustomerService.value = true
 }
 
 const toEditProfile = () => {
@@ -118,7 +155,6 @@ const toEditProfile = () => {
 const toUserUpdatePage = () => {
   router.push("/user/update")
 }
-
 </script>
 
 <style scoped>

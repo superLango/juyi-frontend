@@ -1,8 +1,10 @@
 <template>
   <div id="teamPage">
     <van-search v-model="searchText" placeholder="搜索队伍" @search="onSearch"/>
-    <team-card-list :team-list="teamList"/>
+    <van-pull-refresh v-model="loading" @refresh="onRefresh">
+    <team-card-list :team-list="teamList" @refresh="onRefresh"/>
     <van-empty v-if="teamList?.length < 1" description="数据为空"/>
+    </van-pull-refresh>
   </div>
 </template>
 
@@ -16,9 +18,19 @@ import {onMounted, ref} from "vue";
 
 const router = useRouter();
 
+const loading = ref(false);
+
 const searchText = ref('');
 
 const teamList = ref([]);
+
+const onRefresh = () => {
+  listTeam()
+  setTimeout(() => {
+    // showSuccessToast('刷新成功');
+    loading.value = false;
+  }, 1000);
+};
 
 /**
  * 搜索队伍
@@ -32,6 +44,7 @@ const listTeam = async (val = '') => {
       pageNum: 1,
     }
   });
+  console.log(res)
   if (res?.code === 0) {
     teamList.value = res.data;
   } else {

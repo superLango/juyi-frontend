@@ -51,7 +51,7 @@
       </span>
         </template>
       </van-field>
-      <van-field
+<!--      <van-field
           v-model="planetCode"
           type="planetCode"
           name="planetCode"
@@ -59,7 +59,7 @@
           required
           placeholder="请输入编号"
           :rules="[{ required: true, message: '请输入编号' }]"
-      />
+      />-->
     </van-cell-group>
     <div style="margin: 16px;">
       <van-button round block type="primary" native-type="submit">
@@ -105,7 +105,7 @@ const onSubmit = async () => {
     userAccount: userAccount.value,
     userPassword: userPassword.value,
     checkPassword: checkPassword.value,
-    planetCode: planetCode.value,
+    // planetCode: planetCode.value,
   })
   console.log(res, '用户注册')
   if (res.code === 0 && res.data) {

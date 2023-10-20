@@ -16,8 +16,8 @@
         <div>
           {{ `队伍人数：${team.hasJoinNum}/${team.maxNum}` }}
         </div>
-        <div v-if="team.expireTime">
-          {{ '过期时间：' + team.expireTime }}
+        <div>
+          {{ '过期时间：' + (team.expireTime !== null ? team.expireTime : "永不过期") }}
         </div>
         <div>
           {{ '发布时间：' + team.createTime }}
@@ -27,14 +27,14 @@
         <van-button size="small" plain type="primary" v-if="team.userId !== currentUser?.id && !team.hasJoin"
                     @click="preJoinTeam(team)">加入队伍
         </van-button>
-        <van-button v-if="team.userId === currentUser?.id" size="small" plain type="success"
+        <van-button v-if="team.userId === currentUser?.id || currentUser?.role===1" size="small" plain type="success"
                     @click="doUpdateTeam(team.id)">更新队伍
         </van-button>
         <!-- 仅加入队伍可见 -->
         <van-button v-if="team.userId !== currentUser?.id && team.hasJoin" size="small" plain type="warning"
                     @click="doQuitTeam(team.id)">退出队伍
         </van-button>
-        <van-button v-if="team.userId === currentUser?.id" size="small" plain type="danger"
+        <van-button v-if="team.userId === currentUser?.id || currentUser?.role === 1" size="small" plain type="danger"
                     @click="doDeleteTeam(team.id)">解散队伍
         </van-button>
       </template>
@@ -55,6 +55,11 @@ import {showFailToast, showSuccessToast} from "vant";
 import {getCurrentUser} from "../services/user";
 import {useRouter} from "vue-router";
 
+let emits = defineEmits(['refresh']);
+
+const onRefresh = () => {
+  emits("refresh")
+}
 
 const router = useRouter();
 
@@ -105,6 +110,7 @@ const doJoinTeam = async () => {
   });
   if (res?.code === 0) {
     showSuccessToast('加入成功');
+    onRefresh()
     doJoinCancel();
   } else {
     showFailToast('加入失败' + (res.description ? `，${res.description}` : ''));
@@ -133,9 +139,10 @@ const doQuitTeam = async (id: number) => {
     teamId: id
   });
   if (res?.code === 0) {
-    showSuccessToast('操作成功');
+    showSuccessToast('退出成功');
+    onRefresh()
   } else {
-    showFailToast('操作失败' + (res.description ? `，${res.description}` : ''));
+    showFailToast('退出失败' + (res.description ? `，${res.description}` : ''));
   }
 }
 
@@ -148,9 +155,10 @@ const doDeleteTeam = async (id: number) => {
     id,
   });
   if (res?.code === 0) {
-    showSuccessToast('操作成功');
+    showSuccessToast('解散成功');
+    onRefresh()
   } else {
-    showFailToast('操作失败' + (res.description ? `，${res.description}` : ''));
+    showFailToast('解散失败' + (res.description ? `，${res.description}` : ''));
   }
 }
 
